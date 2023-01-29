@@ -46,8 +46,6 @@ figma.on("run", (event: RunEvent) => {
       return;
     }
 
-    console.log({ isWithinInstanceNode: isWithinInstanceNode(testNode) });
-
     if (isWithinInstanceNode(testNode)) {
       figma.closePlugin(
         formatErrorMessage("Cannot repeat layers inside of Component Instances")
