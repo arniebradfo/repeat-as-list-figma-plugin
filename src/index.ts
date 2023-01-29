@@ -5,6 +5,7 @@ import {
 } from "@create-figma-plugin/utilities";
 
 import { createComponent } from "./create-component-from-node/utilities/create-component";
+import { frameNodes } from "./frame-nodes";
 
 figma.on("run", (event: RunEvent) => {
   console.log(figma.currentPage.selection[0]);
@@ -16,7 +17,16 @@ figma.on("run", (event: RunEvent) => {
     return;
   }
 
-  const node = nodes[0];
+  // if (nodes.length > 1)
+  
+
+  const node = nodes.length === 1 ? nodes[0] : frameNodes([...nodes]);
+  
+  if (node == null) {
+    figma.closePlugin(formatErrorMessage("Issue framing multiple nodes. Please frame these nodes manually."));
+    return;
+  }
+  
   const component = node.type === "COMPONENT" ? node : createComponent(node);
   // if (isWithinInstanceNode(node) === false) {
   const instance = component.createInstance();
