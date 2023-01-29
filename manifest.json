@@ -1,9 +1,7 @@
 {
-  "name": "Repeat Row",
+  "name": "Repeat As List",
   "id": "1201323323265727466",
   "api": "1.0.0",
-	"main": "dist/main.js",
-  "editorType": [
-    "figma"
-  ]
+  "main": "dist/main.js",
+  "editorType": ["figma"]
 }
