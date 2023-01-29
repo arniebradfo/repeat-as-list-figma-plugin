@@ -2,35 +2,75 @@ import {
   formatErrorMessage,
   formatSuccessMessage,
   insertBeforeNode,
+  isWithinInstanceNode,
 } from "@create-figma-plugin/utilities";
 
 import { createComponent } from "./create-component-from-node/utilities/create-component";
 import { frameNodes } from "./frame-nodes";
 
 figma.on("run", (event: RunEvent) => {
-  console.log(figma.currentPage.selection[0]);
+  // console.log(figma.currentPage.selection[0]);
 
   const nodes = figma.currentPage.selection;
 
   if (nodes.length === 0) {
-    figma.closePlugin(formatErrorMessage("Select one or more layers"));
+    figma.closePlugin(
+      formatErrorMessage("Select one or more layers to repeat")
+    );
     return;
   }
 
-  // if (nodes.length > 1)
-  
+  for (let index = 0; index < nodes.length; index++) {
+    const testNode = nodes[index];
+
+    const hasSiblingComponent =
+      nodes.length > 1 &&
+      (testNode.type === "COMPONENT" || testNode.type === "COMPONENT_SET");
+
+    const childComponents =
+      "children" in testNode
+        ? testNode.findAllWithCriteria({
+            types: ["COMPONENT", "COMPONENT_SET"],
+          })
+        : [];
+
+    const selectionContainsOriginalComponents =
+      childComponents.length > 0 || hasSiblingComponent;
+
+    if (selectionContainsOriginalComponents) {
+      figma.closePlugin(
+        formatErrorMessage(
+          "Cannot repeat an Original Component (unless it is the only layer selected)"
+        )
+      );
+      return;
+    }
+
+    console.log({ isWithinInstanceNode: isWithinInstanceNode(testNode) });
+
+    if (isWithinInstanceNode(testNode)) {
+      figma.closePlugin(
+        formatErrorMessage("Cannot repeat layers inside of Component Instances")
+      );
+      return;
+    }
+  }
 
   const node = nodes.length === 1 ? nodes[0] : frameNodes([...nodes]);
-  
+
   if (node == null) {
-    figma.closePlugin(formatErrorMessage("Issue framing multiple nodes. Please frame these nodes manually."));
+    figma.closePlugin(
+      formatErrorMessage(
+        "Issue framing multiple layers. Please frame these layers manually."
+      )
+    );
     return;
   }
-  
+
   const component = node.type === "COMPONENT" ? node : createComponent(node);
-  // if (isWithinInstanceNode(node) === false) {
   const instance = component.createInstance();
   const listFrame = figma.createFrame();
+  
   insertBeforeNode(instance, node);
   insertBeforeNode(listFrame, node);
 
@@ -49,7 +89,6 @@ figma.on("run", (event: RunEvent) => {
   if (node.type !== "COMPONENT") {
     node.remove();
   }
-  // }
 
   figma.currentPage.selection = [instance];
 
