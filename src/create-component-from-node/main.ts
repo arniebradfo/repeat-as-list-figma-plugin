@@ -3,43 +3,43 @@ import {
   formatSuccessMessage,
   insertBeforeNode,
   isWithinInstanceNode,
-  pluralize
-} from '@create-figma-plugin/utilities'
+  pluralize,
+} from "@create-figma-plugin/utilities";
 
-import { createComponent } from './utilities/create-component'
+import { createComponent } from "./utilities/create-component";
 
-const OFFSET = 50
+const OFFSET = 50;
 
 export async function createComponentFromNode(): Promise<void> {
-  const nodes = figma.currentPage.selection
+  const nodes = figma.currentPage.selection;
   if (nodes.length === 0) {
-    figma.closePlugin(formatErrorMessage('Select one or more layers'))
-    return
+    figma.closePlugin(formatErrorMessage("Select one or more layers"));
+    return;
   }
-  const newSelection = []
+  const newSelection = [];
   for (const node of nodes) {
-    const component = node.type === 'COMPONENT' ? node : createComponent(node)
+    const component = node.type === "COMPONENT" ? node : createComponent(node);
     if (isWithinInstanceNode(node) === false) {
-      const instance = component.createInstance()
-      instance.x = node.x
-      instance.y = node.y
-      insertBeforeNode(instance, node)
-      if (node.type !== 'COMPONENT') {
-        node.remove()
+      const instance = component.createInstance();
+      instance.x = node.x;
+      instance.y = node.y;
+      insertBeforeNode(instance, node);
+      if (node.type !== "COMPONENT") {
+        node.remove();
       }
     }
-    component.x += OFFSET
-    component.y += OFFSET
-    newSelection.push(component)
+    component.x += OFFSET;
+    component.y += OFFSET;
+    newSelection.push(component);
   }
-  figma.currentPage.selection = newSelection
+  figma.currentPage.selection = newSelection;
   figma.closePlugin(
     formatSuccessMessage(
       `Created ${pluralize(
         nodes.length,
-        'component from layer',
+        "component from layer",
         `components from ${nodes.length} layers`
       )}`
     )
-  )
+  );
 }

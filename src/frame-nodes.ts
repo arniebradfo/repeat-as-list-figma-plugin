@@ -1,5 +1,4 @@
 export function frameNodes(nodes: SceneNode[]) {
-//   const { selection } = figma.currentPage;
   if (nodes.length === 0) return undefined;
 
   // new frame insertion point should be at the first selected node
@@ -31,13 +30,9 @@ export function frameNodes(nodes: SceneNode[]) {
   });
 
   // groupNode.remove() // groupNode removes itself when it has no children
-  // console.log({ parentLength: parent.children.length, frameInsertionIndex });
 
   parent.insertChild(frameInsertionIndex, frameNode);
 
-  // frameNode.children.forEach((childNode) => autoConstraints(childNode));
-
-  // figma.currentPage.selection = [frameNode];
   return frameNode;
 }
 
