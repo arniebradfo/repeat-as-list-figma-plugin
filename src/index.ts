@@ -65,8 +65,11 @@ figma.on("run", (event: RunEvent) => {
     return;
   }
 
-  const component = node.type === "COMPONENT" ? node : createComponent(node);
-  const instance = component.createInstance();
+  const nodeIsComponentOrInstance = node.type === "COMPONENT" || node.type === "INSTANCE"
+
+  // OR maybe instead of using an instance, we break the instance and make a new component?
+  const component = nodeIsComponentOrInstance ? node : createComponent(node);
+  const instance = component.type === "INSTANCE" ? component.mainComponent!.createInstance() : component.createInstance();
   const listFrame = figma.createFrame();
   
   insertBeforeNode(instance, node);
@@ -84,7 +87,7 @@ figma.on("run", (event: RunEvent) => {
   listFrame.insertChild(0, instance);
   listFrame.insertChild(0, component);
 
-  if (node.type !== "COMPONENT") {
+  if (!nodeIsComponentOrInstance) {
     node.remove();
   }
 
