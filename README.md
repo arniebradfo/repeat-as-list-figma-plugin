@@ -1,4 +1,4 @@
-![preivew](./assets/CoverArt.png)
+![Cover Art](./assets/CoverArt.png)
 
 # <img alt="Repeat As List Icon" src="./assets/Icon.svg" width="32" align="center" /> Repeat as List
 
@@ -10,3 +10,5 @@
 Works like [Adobe XDs repeat grid](https://www.adobe.com/lu_en/products/xd/features/repeat-grid.html) (but only in a vertical stack). This use case is very common during rapid ideation or digital white boarding.
 
 [Install the Plugin from Figma Community](https://www.figma.com/community/plugin/1201323323265727466)
+
+![Icon](./assets/Icon.svg)

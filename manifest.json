@@ -3,5 +3,8 @@
   "id": "1201323323265727466",
   "api": "1.0.0",
   "main": "dist/main.js",
-  "editorType": ["figma"]
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
 }
