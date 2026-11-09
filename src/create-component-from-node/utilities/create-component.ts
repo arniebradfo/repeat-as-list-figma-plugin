@@ -3,7 +3,7 @@ import { cloneObject, insertBeforeNode } from "@create-figma-plugin/utilities";
 import { copyAttributes } from "./copy-attributes";
 import { getReferenceNode } from "./get-reference-node";
 
-export function createComponent(node: SceneNode): ComponentNode {
+export async function createComponent(node: SceneNode): Promise<ComponentNode> {
   const component = figma.createComponent();
   component.name = node.name;
   component.resizeWithoutConstraints(node.width, node.height);
@@ -22,7 +22,7 @@ export function createComponent(node: SceneNode): ComponentNode {
         component.appendChild(child.clone());
       }
     }
-    copyAttributes(node, component as SceneNode);
+    await copyAttributes(node, component as SceneNode);
   } else {
     if ("clone" in node) {
       const clone = node.clone() as Exclude<SceneNode, WidgetNode>;

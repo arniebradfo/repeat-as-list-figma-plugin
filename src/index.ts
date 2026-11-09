@@ -8,7 +8,7 @@ import {
 import { createComponent } from "./create-component-from-node/utilities/create-component";
 import { frameNodes } from "./frame-nodes";
 
-figma.on("run", (event: RunEvent) => {
+figma.on("run", async (_event: RunEvent) => {
   // console.log(figma.currentPage.selection[0]);
 
   const nodes = figma.currentPage.selection;
@@ -68,8 +68,16 @@ figma.on("run", (event: RunEvent) => {
   const nodeIsComponentOrInstance = node.type === "COMPONENT" || node.type === "INSTANCE"
 
   // OR maybe instead of using an instance, we break the instance and make a new component?
-  const component = nodeIsComponentOrInstance ? node : createComponent(node);
-  const instance = component.type === "INSTANCE" ? component.mainComponent!.createInstance() : component.createInstance();
+  const component = nodeIsComponentOrInstance ? node : await createComponent(node);
+  const mainComponent =
+    component.type === "INSTANCE" ? await component.getMainComponentAsync() : component;
+  if (mainComponent == null) {
+    figma.closePlugin(
+      formatErrorMessage("Cannot find the main component of this instance")
+    );
+    return;
+  }
+  const instance = mainComponent.createInstance();
   const listFrame = figma.createFrame();
   
   insertBeforeNode(instance, node);

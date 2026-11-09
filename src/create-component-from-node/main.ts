@@ -18,7 +18,7 @@ export async function createComponentFromNode(): Promise<void> {
   }
   const newSelection = [];
   for (const node of nodes) {
-    const component = node.type === "COMPONENT" ? node : createComponent(node);
+    const component = node.type === "COMPONENT" ? node : await createComponent(node);
     if (isWithinInstanceNode(node) === false) {
       const instance = component.createInstance();
       instance.x = node.x;
